@@ -11,6 +11,8 @@
 				"-Wall",
 				"-Wextra",
 				"-Werror",
+				"-L.",
+				"-lft",
 				"*.c",
 				"-o",
 				"${fileDirname}/server"
