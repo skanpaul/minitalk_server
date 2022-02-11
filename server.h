@@ -16,7 +16,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <signal.h>
-# include "libft.h"
+// # include "libft.h"
 /* ************************************************************************** */
 typedef struct s_data
 {
