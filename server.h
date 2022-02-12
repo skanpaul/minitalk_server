@@ -40,7 +40,6 @@ typedef struct s_data
 void	handler_sig_usr(int sig_c);
 void	init_data(t_data *data);
 
-
 /* ************************************************************************** */
 #endif
 

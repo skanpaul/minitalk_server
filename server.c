@@ -20,23 +20,18 @@ t_data data;
 int main(void)
 {
 	int pid_server;
-
 	/* INITIALISATION -------------------------------- */
 	init_data(&data);
-
 	/* Affichage PID server -------------------------- */
 	pid_server = getpid();	
 	printf("Server PID: %d \n", pid_server);
-
 	/* Link SIGNAL with HANDLER ---------------------- */
 	sigaction(SIGUSR1, &data.sa, 0);
 	sigaction(SIGUSR2, &data.sa, 0);
-
 	/* ATTENTE DE SIGNAL ----------------------------- */
-	while (1)
-
-
-		pause();
+	while (1) ;
+	// while (1)
+	// 	pause();
 	/* ----------------------------------------------- */
 	return (0);
 }
@@ -45,11 +40,16 @@ int main(void)
 void handler_sig_usr(int sig_c)
 {
 	/* ----------------------------------------------- */
+	// if (sig_c == SIGUSR1) printf("0");	
+	// if (sig_c == SIGUSR2)
+	// {
+	// 	printf("1");	
+	// 	data.byte = data.byte | data.mask;		
+	// }
 	if (sig_c == SIGUSR2)
 		data.byte = data.byte | data.mask;		
 	data.bit_cnt++;
-	data.mask >>= 1;
-	
+	data.mask >>= 1;	
 	/* ----------------------------------------------- */
 	if(data.bit_cnt == 8)
 		{
@@ -57,8 +57,7 @@ void handler_sig_usr(int sig_c)
 			data.mask = MASK_BIT_7;
 			data.byte_cnt++;
 			printf("byte[%d] - caractere: %c\n", data.byte_cnt, data.byte);
-		} 
-	
+		} 	
 	/* ----------------------------------------------- */
 
 	

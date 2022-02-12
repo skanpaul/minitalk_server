@@ -1,6 +1,7 @@
 {
 	"files.associations": {
-		"signal.h": "c"
+		"signal.h": "c",
+		"server.h": "c"
 	},
 	"files.exclude": {
 		"libft.*": true,
