@@ -14,39 +14,54 @@
 /* ************************************************************************** */
 t_data data;
 /* ************************************************************************** */
-void handler_sig_usr(int sig_c);
+
 
 /* ************************************************************************** */
 int main(void)
 {
 	int pid_server;
 
-	pid_server = getpid();
-	
+	/* INITIALISATION -------------------------------- */
+	init_data(&data);
+
+	/* Affichage PID server -------------------------- */
+	pid_server = getpid();	
 	printf("Server PID: %d \n", pid_server);
-	// ft_printf("Server PID: %d \n", pid_server);
 
-	data.sa.sa_handler = &handler_sig_usr;
-	data.sa.sa_flags = SA_RESTART;
-	// data.sa.sa_mask = 0xFFFFFFFF;  // A VERIFIER LE COMPORTEMENT CORRECTE OU PAS
-
+	/* Link SIGNAL with HANDLER ---------------------- */
 	sigaction(SIGUSR1, &data.sa, 0);
 	sigaction(SIGUSR2, &data.sa, 0);
 
+	/* ATTENTE DE SIGNAL ----------------------------- */
 	while (1)
-	{
+
+
 		pause();
-	}
+	/* ----------------------------------------------- */
 	return (0);
 }
 
 /* ************************************************************************** */
 void handler_sig_usr(int sig_c)
 {
-	if (sig_c == SIGUSR1) printf("0 reçu\n");
-	if (sig_c == SIGUSR2) printf("1 reçu\n");
-	// if (sig_c == SIGUSR1) ft_printf("0 reçu\n");
-	// if (sig_c == SIGUSR2) ft_printf("1 reçu\n");
+	/* ----------------------------------------------- */
+	if (sig_c == SIGUSR2)
+		data.byte = data.byte | data.mask;		
+	data.bit_cnt++;
+	data.mask >>= 1;
+	
+	/* ----------------------------------------------- */
+	if(data.bit_cnt == 8)
+		{
+			data.bit_cnt = 0;
+			data.mask = MASK_BIT_7;
+			data.byte_cnt++;
+			printf("byte[%d] - caractere: %c\n", data.byte_cnt, data.byte);
+		} 
+	
+	/* ----------------------------------------------- */
+
+	
 }
 
 /* ************************************************************************** */
