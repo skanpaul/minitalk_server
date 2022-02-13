@@ -17,7 +17,7 @@ void init_data(t_data *data)
 	/* Preparation string pid_client ----------------- */
 	data->pid_client = 0;
 	data->size_stream = 0;
-
+	data->str = NULL;
 	data->i = 0;
 	
 	/* Configuration STRUCT SIGACTION ---------------- */

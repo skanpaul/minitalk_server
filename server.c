@@ -26,7 +26,7 @@ int main(void)
 	init_byte_building(&data);
 	/* Affichage PID server -------------------------- */
 	pid_server = getpid();	
-	printf("PID server: %d \n", pid_server);
+	ft_printf("PID server: %d \n", pid_server);
 	/* Link SIGNAL with HANDLER ---------------------- */
 	sigaction(SIGUSR1, &data.sa, 0);
 	sigaction(SIGUSR2, &data.sa, 0);
@@ -47,7 +47,7 @@ void handler_sig_usr(int sig_c)
 	/* ----------------------------------------------- */
 	if(data.bit_cnt == 8)
 	{
-		printf("byte[%d] - caractere: %#02x\n", data.byte_cnt, data.byte);		
+		// printf("byte[%d] - caractere: %#02x\n", data.byte_cnt, data.byte);		
 		/* PID client ------------------------------------ */
 		if ((0 <= data.byte_cnt) && (data.byte_cnt < 4))
 			data.pid_client |= data.byte;
@@ -64,21 +64,27 @@ void handler_sig_usr(int sig_c)
 			data.str = (char *)malloc(data.size_stream * sizeof(char));
 			if (!data.str)
 				exit(1);
-			printf("malloc OK\n");
+			// printf("malloc OK\n");
 		}
 		/* ----------------------------------------------- */
 		if (8 <= data.byte_cnt)
 		{
 			if(data.byte_cnt < (data.size_stream + 8))
 			{
-				printf("fabrique string: byte[%c] - i[%d]\n", (char)data.byte, data.i);
+				// printf("fabrique string: str[%d] = [%c]\n", data.i, (char)data.byte);
 				data.str[data.i] = (char)data.byte;
 				data.i++;
 			}		
 			if (data.byte_cnt == (data.size_stream + 8 - 1))
 			{
-				printf("Dans le write\n");
+				// printf("Dans le write - byte[%d]\n", data.byte_cnt);
 				write(1, data.str, data.size_stream);
+				write(1, "\n", 1);
+				free (data.str);
+				sleep(1);
+				kill(data.pid_client, SIGUSR1);
+				init_data(&data);
+				return ;
 			}
 		}
 
@@ -88,8 +94,8 @@ void handler_sig_usr(int sig_c)
 		data.bit_cnt = 0;
 		data.mask = MASK_BIT_7;
 		/* ----------------------------------------------- */
-		if (data.byte_cnt == 4) printf("\nPID client: %u\n", data.pid_client);
-		if (data.byte_cnt == 8) printf("Size Stream: %u\n\n", data.size_stream);
+		if (data.byte_cnt == 4) printf("PID client:\t[%u]\n", data.pid_client);
+		if (data.byte_cnt == 8) printf("Size Stream:\t[%u]\n", data.size_stream);
 		/* ----------------------------------------------- */
 
 	}
