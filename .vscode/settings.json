@@ -5,6 +5,8 @@
 	},
 	"files.exclude": {
 		"libft.*": true,
-		"*.o": true
-	}
+		"*.o": true,
+		"*.pdf": true
+	},
+	"explorer.sortOrder": "type"
 }

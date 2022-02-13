@@ -12,11 +12,12 @@
 #ifndef SERVER_H
 # define SERVER_H
 /* ************************************************************************** */
+# include "libft.h"
+/* ************************************************************************** */
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <signal.h>
-// # include "libft.h"
 /* ************************************************************************** */
 # define MASK_BIT_0		1
 # define MASK_BIT_1		2
@@ -29,17 +30,25 @@
 /* ************************************************************************** */
 typedef struct s_data
 {
-	struct sigaction sa;
-	// struct sigaction sa_old;
-	int	bit_cnt;
-	int byte_cnt;
-	int byte;
-	int mask;
+	struct	sigaction sa;
+
+	char str_pid_client[5];
+	unsigned int pid_client;
+	
+	char str_size_stream[5];
+	unsigned int size_stream;
+
+	unsigned int bit_cnt;
+	unsigned int byte_cnt;
+	unsigned int byte;
+	unsigned int mask;
+
 }	t_data;
 /* ************************************************************************** */
 void	handler_sig_usr(int sig_c);
 void	init_data(t_data *data);
+void	init_byte_building(t_data *data);
+int		do_pid_client(t_data *data);
 
 /* ************************************************************************** */
 #endif
-
