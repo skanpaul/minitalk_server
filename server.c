@@ -81,7 +81,7 @@ void handler_sig_usr(int sig_c)
 				write(1, data.str, data.size_stream);
 				write(1, "\n", 1);
 				free (data.str);
-				sleep(1);
+				usleep(100000);
 				kill(data.pid_client, SIGUSR1);
 				init_data(&data);
 				return ;
