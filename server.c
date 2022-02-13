@@ -39,7 +39,6 @@ int main(void)
 /* ************************************************************************** */
 void handler_sig_usr(int sig_c)
 {
-	// char *bidon = "3621";
 	/* ----------------------------------------------- */
 	if (sig_c == SIGUSR2)
 		data.byte = data.byte | data.mask;		
@@ -60,6 +59,30 @@ void handler_sig_usr(int sig_c)
 			if (data.byte_cnt < 7)
 				data.size_stream <<= 8;
 		/* ----------------------------------------------- */
+		if (data.byte_cnt == 7)
+		{
+			data.str = (char *)malloc(data.size_stream * sizeof(char));
+			if (!data.str)
+				exit(1);
+			printf("malloc OK\n");
+		}
+		/* ----------------------------------------------- */
+		if (8 <= data.byte_cnt)
+		{
+			if(data.byte_cnt < (data.size_stream + 8))
+			{
+				printf("fabrique string: byte[%c] - i[%d]\n", (char)data.byte, data.i);
+				data.str[data.i] = (char)data.byte;
+				data.i++;
+			}		
+			if (data.byte_cnt == (data.size_stream + 8 - 1))
+			{
+				printf("Dans le write\n");
+				write(1, data.str, data.size_stream);
+			}
+		}
+
+		/* ----------------------------------------------- */
 		data.byte = 0;
 		data.byte_cnt++;	
 		data.bit_cnt = 0;
@@ -72,6 +95,8 @@ void handler_sig_usr(int sig_c)
 	}
 	/* ----------------------------------------------- */
 	// METTRE data_byte_cnt à ZERO
+	// FREE LE MALLOC
+	// remettre i 0
 }
 
 /* ************************************************************************** */

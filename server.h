@@ -40,6 +40,9 @@ typedef struct s_data
 	unsigned int byte;
 	unsigned int mask;
 
+	char *str;
+	int i;
+
 }	t_data;
 /* ************************************************************************** */
 void	handler_sig_usr(int sig_c);
