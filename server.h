@@ -32,10 +32,7 @@ typedef struct s_data
 {
 	struct	sigaction sa;
 
-	char str_pid_client[5];
 	unsigned int pid_client;
-	
-	char str_size_stream[5];
 	unsigned int size_stream;
 
 	unsigned int bit_cnt;

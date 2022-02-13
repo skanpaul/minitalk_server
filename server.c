@@ -31,11 +31,7 @@ int main(void)
 	sigaction(SIGUSR1, &data.sa, 0);
 	sigaction(SIGUSR2, &data.sa, 0);
 	/* ATTENTE DE SIGNAL ----------------------------- */
-	while (1) 
-	{
-
-		pause();
-	}
+	while (1) pause();
 	/* ----------------------------------------------- */
 	return (0);
 }
@@ -49,41 +45,30 @@ void handler_sig_usr(int sig_c)
 		data.byte = data.byte | data.mask;		
 	data.bit_cnt++;
 	data.mask >>= 1;	
-
 	/* ----------------------------------------------- */
 	if(data.bit_cnt == 8)
 	{
-		printf("byte[%d] - caractere: %x\n", data.byte_cnt, data.byte);
-		
+		printf("byte[%d] - caractere: %#02x\n", data.byte_cnt, data.byte);		
 		/* PID client ------------------------------------ */
-		if (data.byte_cnt < 4)
-			// data.str_pid_client[data.byte_cnt] = data.byte;
-			printf("Avant: %#010x\n", data.pid_client);
+		if ((0 <= data.byte_cnt) && (data.byte_cnt < 4))
 			data.pid_client |= data.byte;
 			if (data.byte_cnt < 3)
 				data.pid_client <<= 8;
-			printf("Apres: %#010x\n", data.pid_client);
-
-		if (data.byte_cnt == 3)
-		{
-			// data.pid_client = (unsigned int)ft_atoi(data.str_pid_client);
-			printf("\nbyte[%d] - PID client: %u\n\n", data.byte_cnt, data.pid_client);
-		}
-		/* SIZE stream ----------------------------------- */
+		// /* SIZE stream ----------------------------------- */
 		if ((4 <= data.byte_cnt) && (data.byte_cnt < 8))
-			data.str_size_stream[data.byte_cnt - 4] = data.byte;
-		if (data.byte_cnt == 7)
-		{
-			data.size_stream = (unsigned int)ft_atoi(data.str_size_stream);
-			printf("\nbyte[%d] - Size Stream: %u\n\n", data.byte_cnt, data.size_stream);
-		}
-
+			data.size_stream |= data.byte;
+			if (data.byte_cnt < 7)
+				data.size_stream <<= 8;
 		/* ----------------------------------------------- */
 		data.byte = 0;
-		data.byte_cnt++;
-	
+		data.byte_cnt++;	
 		data.bit_cnt = 0;
 		data.mask = MASK_BIT_7;
+		/* ----------------------------------------------- */
+		if (data.byte_cnt == 4) printf("\nPID client: %u\n", data.pid_client);
+		if (data.byte_cnt == 8) printf("Size Stream: %u\n\n", data.size_stream);
+		/* ----------------------------------------------- */
+
 	}
 	/* ----------------------------------------------- */
 	// METTRE data_byte_cnt à ZERO

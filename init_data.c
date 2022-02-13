@@ -12,14 +12,9 @@
 #include "server.h"
 
 /* ************************************************************************** */
-static void reset_str_int(char *str_int);
-
-/* ************************************************************************** */
 void init_data(t_data *data)
 {
 	/* Preparation string pid_client ----------------- */
- 	reset_str_int(data->str_pid_client);
-	reset_str_int(data->str_size_stream);
 	data->pid_client = 0;
 	data->size_stream = 0;
 	
@@ -37,15 +32,3 @@ void init_data(t_data *data)
 }
 
 /* ************************************************************************** */
-static void reset_str_int(char *str_int)
-{
-	int i;
-
-	i = 0;
-	while (i < 5)
-	{
-		str_int[i] = '\0';
-		i++;
-	}
-	return ;
-}
