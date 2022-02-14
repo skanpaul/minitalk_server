@@ -36,6 +36,7 @@ int	main(void)
 /* ************************************************************************** */
 void	handler_sig_usr(int sig_c)
 {
+	int should_return;
 	/* ----------------------------------------------- */
 	if (sig_c == SIGUSR2)
 		g_d.byte = g_d.byte | g_d.mask;
@@ -44,23 +45,8 @@ void	handler_sig_usr(int sig_c)
 	/* ----------------------------------------------- */
 	if (g_d.bit_cnt == 8)
 	{
-		/* PID client ------------------------------------ */
 		stream_in_int(0, &g_d.pid_client, &g_d);
-		// if ((0 <= g_d.byte_cnt) && (g_d.byte_cnt < 4))
-		// {
-		// 	g_d.pid_client |= g_d.byte;
-		// 	if (g_d.byte_cnt < 3)
-		// 		g_d.pid_client <<= 8;
-		// }
-		// /* SIZE stream ----------------------------------- */
-
 		stream_in_int(4, &g_d.size_stream, &g_d);
-		// if ((4 <= g_d.byte_cnt) && (g_d.byte_cnt < 8))
-		// {
-		// 	g_d.size_stream |= g_d.byte;
-		// 	if (g_d.byte_cnt < 7)
-		// 		g_d.size_stream <<= 8;
-		// }
 		/* ----------------------------------------------- */
 		if (g_d.byte_cnt == 7)
 		{
@@ -69,24 +55,27 @@ void	handler_sig_usr(int sig_c)
 				exit(1);
 		}
 		/* ----------------------------------------------- */
-		if (8 <= g_d.byte_cnt)
-		{
-			if (g_d.byte_cnt < (g_d.size_stream + 8))
-			{
-				g_d.str[g_d.i] = (char)g_d.byte;
-				g_d.i++;
-			}		
-			if (g_d.byte_cnt == (g_d.size_stream + 8 - 1))
-			{
-				write(1, g_d.str, g_d.size_stream);
-				write(1, "\n", 1);
-				free (g_d.str);
-				usleep(100000);
-				kill(g_d.pid_client, SIGUSR1);
-				init_data(&g_d);
-				return ;
-			}
-		}
+		should_return = stream_in_str(8, g_d.str, &g_d);
+		if (should_return)
+			return;
+		// if (8 <= g_d.byte_cnt)
+		// {
+		// 	if (g_d.byte_cnt < (g_d.size_stream + 8))
+		// 	{
+		// 		g_d.str[g_d.i] = (char)g_d.byte;
+		// 		g_d.i++;
+		// 	}		
+		// 	if (g_d.byte_cnt == (g_d.size_stream + 8 - 1))
+		// 	{
+		// 		write(1, g_d.str, g_d.size_stream);
+		// 		write(1, "\n", 1);
+		// 		free (g_d.str);
+		// 		usleep(100000);
+		// 		kill(g_d.pid_client, SIGUSR1);
+		// 		init_data(&g_d);
+		// 		return ;
+		// 	}
+		// }
 		/* ----------------------------------------------- */
 		g_d.byte = 0;
 		g_d.byte_cnt++;

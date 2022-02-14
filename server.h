@@ -50,7 +50,8 @@ void	handler_sig_usr(int sig_c);
 void	init_data(t_data *data);
 void	init_byte_building(t_data *data);
 
-void	stream_in_int(unsigned int byte_start, unsigned int *val, t_data *d);
+void	stream_in_int(unsigned int start, unsigned int *val, t_data *d);
+int		stream_in_str(unsigned int start, char *str, t_data *d);
 
 // int		do_pid_client(t_data *data);
 
