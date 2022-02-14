@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_data.c                                        :+:      :+:    :+:   */
+/*   init_data_server.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ski <marvin@42lausanne.ch>                 +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,21 +12,21 @@
 #include "server.h"
 
 /* ************************************************************************** */
-void	init_data(t_data *data)
+void	init_data_server(t_data *d)
 {
-	data->pid_client = 0;
-	data->size_stream = 0;
-	data->str = NULL;
-	data->i = 0;
-	data->sa.sa_handler = &handler_sig_usr;
-	data->sa.sa_flags = SA_RESTART;
-	sigemptyset(&data->sa.sa_mask);
-	sigaddset(&data->sa.sa_mask, SIGUSR1);
-	sigaddset(&data->sa.sa_mask, SIGUSR2);
-	data->mask = MASK_BIT_7;
-	data->byte = 0;
-	data->bit_cnt = 0;
-	data->byte_cnt = 0;
+	d->pid_client = 0;
+	d->size_stream = 0;
+	d->str = NULL;
+	d->i = 0;
+	d->sa.sa_handler = &handler_sig_usr;
+	d->sa.sa_flags = SA_RESTART;
+	sigemptyset(&d->sa.sa_mask);
+	sigaddset(&d->sa.sa_mask, SIGUSR1);
+	sigaddset(&d->sa.sa_mask, SIGUSR2);
+	d->mask = MASK_BIT_7;
+	d->byte = 0;
+	d->bit_cnt = 0;
+	d->byte_cnt = 0;
 }
 
 /* ************************************************************************** */

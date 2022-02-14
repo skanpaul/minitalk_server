@@ -1,5 +1,6 @@
 NAME	= server
 
+# **************************************************************************
 CC		= gcc
 CFLAG	= -Wall -Wextra -Werror
 RM		= rm -f
@@ -10,10 +11,17 @@ NFLAG	= -R CheckForbiddenSourceHeader
 LIBFTPATH = .
 LIBFTNAME = ft
 
-HD		= $(wildcard *.h)
-SRC		= $(wildcard *.c)
+# **************************************************************************
+HD		= server.h \
+			libft.h
+SRC		= server.c \
+			init_data_server.c \
+			stream_in_int.c \
+			stream_in_str.c
+
 OBJ		= $(SRC:.c=.o)
 
+# **************************************************************************
 all: $(NAME)
 
 $(NAME): $(OBJ) $(HD)
@@ -29,6 +37,7 @@ re: fclean all
 
 .PHONY: all clean fclean re
 
+# **************************************************************************
 run:
 	./$(NAME)
 

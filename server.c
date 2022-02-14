@@ -22,7 +22,7 @@ int	main(void)
 {
 	int	pid_server;
 
-	init_data(&g_d);
+	init_data_server(&g_d);
 	pid_server = getpid();
 	ft_printf("PID server: %d \n", pid_server);
 	sigaction(SIGUSR1, &g_d.sa, 0);

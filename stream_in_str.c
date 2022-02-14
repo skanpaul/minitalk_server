@@ -28,7 +28,7 @@ int	stream_in_str(unsigned int start, char *str, t_data *d)
 			free (d->str);
 			usleep(100000);
 			kill(d->pid_client, SIGUSR1);
-			init_data(d);
+			init_data_server(d);
 			return (1);
 		}
 	}
