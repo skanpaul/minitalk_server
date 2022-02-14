@@ -12,97 +12,91 @@
 #include "server.h"
 
 /* ************************************************************************** */
-void handler_sig_usr(int sig_c);
+void	handler_sig_usr(int sig_c);
 
 /* ************************************************************************** */
-t_data data;
+t_data	g_d;
 
 /* ************************************************************************** */
-int main(void)
+int	main(void)
 {
-	int pid_server;
-	/* INITIALISATION -------------------------------- */
-	init_data(&data);
-	init_byte_building(&data);
-	/* Affichage PID server -------------------------- */
-	pid_server = getpid();	
+	int	pid_server;
+
+	init_data(&g_d);
+	init_byte_building(&g_d);
+	pid_server = getpid();
 	ft_printf("PID server: %d \n", pid_server);
-	/* Link SIGNAL with HANDLER ---------------------- */
-	sigaction(SIGUSR1, &data.sa, 0);
-	sigaction(SIGUSR2, &data.sa, 0);
-	/* ATTENTE DE SIGNAL ----------------------------- */
-	while (1) pause();
-	/* ----------------------------------------------- */
+	sigaction(SIGUSR1, &g_d.sa, 0);
+	sigaction(SIGUSR2, &g_d.sa, 0);
+	while (1)
+		pause();
 	return (0);
 }
 
 /* ************************************************************************** */
-void handler_sig_usr(int sig_c)
+void	handler_sig_usr(int sig_c)
 {
 	/* ----------------------------------------------- */
 	if (sig_c == SIGUSR2)
-		data.byte = data.byte | data.mask;		
-	data.bit_cnt++;
-	data.mask >>= 1;	
+		g_d.byte = g_d.byte | g_d.mask;
+	g_d.bit_cnt++;
+	g_d.mask >>= 1;
 	/* ----------------------------------------------- */
-	if(data.bit_cnt == 8)
+	if (g_d.bit_cnt == 8)
 	{
-		// printf("byte[%d] - caractere: %#02x\n", data.byte_cnt, data.byte);		
 		/* PID client ------------------------------------ */
-		if ((0 <= data.byte_cnt) && (data.byte_cnt < 4))
-			data.pid_client |= data.byte;
-			if (data.byte_cnt < 3)
-				data.pid_client <<= 8;
+		stream_in_int(0, &g_d.pid_client, &g_d);
+		// if ((0 <= g_d.byte_cnt) && (g_d.byte_cnt < 4))
+		// {
+		// 	g_d.pid_client |= g_d.byte;
+		// 	if (g_d.byte_cnt < 3)
+		// 		g_d.pid_client <<= 8;
+		// }
 		// /* SIZE stream ----------------------------------- */
-		if ((4 <= data.byte_cnt) && (data.byte_cnt < 8))
-			data.size_stream |= data.byte;
-			if (data.byte_cnt < 7)
-				data.size_stream <<= 8;
+
+		stream_in_int(4, &g_d.size_stream, &g_d);
+		// if ((4 <= g_d.byte_cnt) && (g_d.byte_cnt < 8))
+		// {
+		// 	g_d.size_stream |= g_d.byte;
+		// 	if (g_d.byte_cnt < 7)
+		// 		g_d.size_stream <<= 8;
+		// }
 		/* ----------------------------------------------- */
-		if (data.byte_cnt == 7)
+		if (g_d.byte_cnt == 7)
 		{
-			data.str = (char *)malloc(data.size_stream * sizeof(char));
-			if (!data.str)
+			g_d.str = (char *)malloc(g_d.size_stream * sizeof(char));
+			if (!g_d.str)
 				exit(1);
-			// printf("malloc OK\n");
 		}
 		/* ----------------------------------------------- */
-		if (8 <= data.byte_cnt)
+		if (8 <= g_d.byte_cnt)
 		{
-			if(data.byte_cnt < (data.size_stream + 8))
+			if (g_d.byte_cnt < (g_d.size_stream + 8))
 			{
-				// printf("fabrique string: str[%d] = [%c]\n", data.i, (char)data.byte);
-				data.str[data.i] = (char)data.byte;
-				data.i++;
+				g_d.str[g_d.i] = (char)g_d.byte;
+				g_d.i++;
 			}		
-			if (data.byte_cnt == (data.size_stream + 8 - 1))
+			if (g_d.byte_cnt == (g_d.size_stream + 8 - 1))
 			{
-				// printf("Dans le write - byte[%d]\n", data.byte_cnt);
-				write(1, data.str, data.size_stream);
+				write(1, g_d.str, g_d.size_stream);
 				write(1, "\n", 1);
-				free (data.str);
+				free (g_d.str);
 				usleep(100000);
-				kill(data.pid_client, SIGUSR1);
-				init_data(&data);
+				kill(g_d.pid_client, SIGUSR1);
+				init_data(&g_d);
 				return ;
 			}
 		}
-
 		/* ----------------------------------------------- */
-		data.byte = 0;
-		data.byte_cnt++;	
-		data.bit_cnt = 0;
-		data.mask = MASK_BIT_7;
+		g_d.byte = 0;
+		g_d.byte_cnt++;
+		g_d.bit_cnt = 0;
+		g_d.mask = MASK_BIT_7;
 		/* ----------------------------------------------- */
-		if (data.byte_cnt == 4) printf("PID client:\t[%u]\n", data.pid_client);
-		if (data.byte_cnt == 8) printf("Size Stream:\t[%u]\n", data.size_stream);
-		/* ----------------------------------------------- */
-
+		if (g_d.byte_cnt == 4)
+			printf("PID client:\t[%u]\n", g_d.pid_client);
+		if (g_d.byte_cnt == 8)
+			printf("Size Stream:\t[%u]\n", g_d.size_stream);
 	}
-	/* ----------------------------------------------- */
-	// METTRE data_byte_cnt à ZERO
-	// FREE LE MALLOC
-	// remettre i 0
 }
-
 /* ************************************************************************** */
